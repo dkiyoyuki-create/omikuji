@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>おみくじ</title>
+    <style>
+        .omikuji{
+             background-color: #f4ae2c; /* 左側の赤背景に合わせる */
+             color: #fff;
+             text-align: center;
+             padding: 10px;
+             border-radius: 10px;
+             display: flex;
+             flex-direction: column;
+             align-items: center;
+             gap: 3px;
+             box-shadow: 0 0 20px rgba(0,0,0,0.3);
+             border:double 10px #fff;
+
+        }
+        /* バウンドさせる */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        /* 点滅させる */
+        /* @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        } */
+       .omikuji-headline{
+            font-size: 20px;
+            /* font-weight: bold;
+            background-color: #fff; */
+            color: #fa3737;
+            /* padding: 10px 20px; */
+            /* border-radius: 10px; */
+            animation: bounce 1s infinite;
+            /* animation: blink 1s infinite; */
+
+        }
+        .omikuji-result{
+            max-width: 250px; /* 画像サイズに合わせて調整 */
+            /* border: 5px solid #fff; */
+            border:double 10px #fff;
+            border-radius: 10px;
+            overflow: hidden;
+
+        }
+        /* 画像を収める */
+        .omikuji-result img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .omikuji-button{
+            background-color: #fff;
+            color: #fa3737;
+            border: none;
+            padding: 10px 15px;
+            font-size: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            border-top: double 1px #fff;
+            border-bottom: solid 5px #fa3737;
+
+        }
+        .omikuji-button:hover {
+            transform: scale(1.05);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="omikuji">
+           <h1 class="omikuji-headline">おみくじアプリ</h1>
+           <div class="omikuji-result">
+              <img id="js-result" src="./images/omikuji-6.JPG" alt="おみくじ">
+           </div>
+           <button type="button" class="omikuji-button" id="js-button">おみくじを引く</button>
+    </div>
+    
+    <!-- 音声ファイルの読み込み -->
+    <audio id="audio-start" src="./audio/start.mp3"></audio>
+    <audio id="audio-drumroll" src="./audio/drumroll.mp3" loop></audio>
+    <audio id="audio-mondai" src="./audio/mondai.mp3"></audio>
+
+    <script>
+      // ランダム表示
+           //const number =  Math.floor 小数点切り捨て  (Math.random()*6)　ランダムに表示と表示させたい画像の個数
+           function getRandomImage(){
+             const number = Math.floor(Math.random()*6)
+             return `./images/omikuji-${number}.JPG`;
+           }
+     
+　　　// ボタンを押したら回転する
+           function playOmikuji(){
+             const startSound = document.getElementById("audio-start")
+             const drumrollSound = document.getElementById("audio-drumroll")
+             const mondaiSound = document.getElementById("audio-mondai")
+
+              // スタート音を再生
+             startSound.currentTime = 0;
+             startSound.play();
+
+              // ドラムロール開始
+             drumrollSound.currentTime = 0;
+             drumrollSound.play();
+
+              // スロット演出
+             const timer = setInterval(() => {
+               document.getElementById("js-result").setAttribute("src", getRandomImage());
+             }, 100);
+
+              // 3秒後に止めて結果音を再生
+             setTimeout(() => {
+             clearInterval(timer);
+             drumrollSound.pause();
+             drumrollSound.currentTime = 0;
+               // 結果音再生
+             mondaiSound.currentTime = 0;
+             mondaiSound.play();
+            }, 3000);
+           }
+
+            // setInterval 何度も関数を繰り返す
+            //  clearInterval() setIntervalで実行された処理を取り消す
+        //    function playOmikuji(){
+        //       const timer = setInterval(function(){
+        //           document.querySelector("#js-result").setAttribute("src",getRandomImage());
+        //       },100);
+              // 数秒後にスロットが止まる
+        //       setTimeout(function(){
+        //           clearInterval(timer);
+        //       },3000);
+        //    }
+        document.querySelector("#js-button").addEventListener("click",playOmikuji);      
+    
+
+    </script>
+</body>
+</html>
